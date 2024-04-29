@@ -1,21 +1,47 @@
-var wins = 0, losses = 0, ties = 0;
-        
-function play(userChoice) {
-        var choices = ['rock', 'paper', 'scissors'];
-        var computerChoice = choices[Math.floor(Math.random() * choices.length)];
+let todos = [];
 
-        if (userChoice === computerChoice) {
-            ties++;
-            document.getElementById('ties').innerText = ties;
-        } else if (
-            (userChoice === 'rock' && computerChoice === 'scissors') ||
-            (userChoice === 'paper' && computerChoice === 'rock') ||
-            (userChoice === 'scissors' && computerChoice === 'paper')
-        ) {
-            wins++;
-            document.getElementById('wins').innerText = wins;
-        } else {
-            losses++;
-            document.getElementById('losses').innerText = losses;
+function renderTodos() {
+    const todoList = document.getElementById('todo-list');
+    todoList.innerHTML = '';
+    todos.forEach((todo, index) => {
+        const todoItem = document.createElement('li');
+        if(todo.complete) {
+            todoItem.innerHTML = `
+            <span style="text-decoration: line-through;">${todo.text}</span>
+            <button onclick="toggleComplete(${index})">Complete Todo</button>
+            <button onclick="deleteTodo(${index})">Delete Todo</button>
+        `;
         }
+        else {
+            todoItem.innerHTML = `
+            <span>${todo.text}</span>
+            <button onclick="toggleComplete(${index})">Complete Todo</button>
+            <button onclick="deleteTodo(${index})">Delete Todo</button>
+        `;
+        }
+        
+        todoList.appendChild(todoItem);
+    });
 }
+
+function addTodo() {
+    const todoInput = document.getElementById('todo-input');
+    todos.push({ text: todoInput.value, complete: false });
+    todoInput.value = '';
+    renderTodos();
+}
+
+function toggleComplete(index) {
+    todos[index].complete = !todos[index].complete;
+    renderTodos();
+}
+
+function deleteTodo(index) {
+    todos.splice(index, 1);
+    renderTodos();
+}
+
+document.getElementById('todo-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    addTodo();
+});
